@@ -1,0 +1,33 @@
+{
+	"name": "muses-api",
+	"version": "0.0.1",
+	"description": "Backend to fetch and return AI-generated images for Muses Pi",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/RobRotell/muses-api"
+	},
+	"author": "Rob Rotell",
+	"license": "UNLICENSED",
+	"bugs": {
+		"url": "https://github.com/RobRotell/muses-api/issues"
+	},
+	"homepage": "https://muses.robr.app",
+	"type": "module",
+	"scripts": {
+		"dev": "nodemon src/index.js"
+	},
+	"dependencies": {
+		"@hono/node-server": "^1.13.8",
+		"hono": "^4.7.4"
+	},
+	"devDependencies": {
+		"@eslint/js": "^9.22.0",
+		"@types/node": "^22.13.10",
+		"dotenv": "^16.4.7",
+		"eslint": "^9.22.0",
+		"eslint-plugin-import": "^2.31.0",
+		"globals": "^16.0.0",
+		"nodemon": "^3.1.9"
+	},
+	"packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+}
