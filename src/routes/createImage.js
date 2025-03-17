@@ -1,5 +1,5 @@
 /**
- * Create image
+ * Handle requests to create images
  *
  * @param {Object} app
  * @return {void}

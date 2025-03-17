@@ -58,4 +58,14 @@ export class Image {
 		}
 	}
 
+
+	/**
+	 * Increment views for image
+	 *
+	 * @return {void}
+	 */
+	async incrementViews() {
+
+	}
+
 }
