@@ -19,3 +19,7 @@ model Entry {
   tokens     Int
   views      Int
 }
+
+
+// npx prisma format
+// npx prisma db push
