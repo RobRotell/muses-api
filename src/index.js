@@ -1,22 +1,22 @@
-import 'dotenv/config'
-import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
-import { getImage } from './routes/getImage.js'
-import { createImage } from './routes/createImage.js'
+import { getEntry } from './routes/getEntry'
+import { createEntry } from './routes/createEntry'
+import { serveImage } from './routes/serveImage'
 
 
-// base app
 const app = new Hono();
 
 
-// add routes
 [
-	getImage,
-	createImage
+	getEntry,
+	createEntry,
+	serveImage
 ].forEach( route => route( app ) )
 
 
-serve({
-	fetch: app.fetch,
-	port: 3000
+app.get( '/', c => {
+	return c.text( 'Hello!' )
 })
+
+
+export default app
