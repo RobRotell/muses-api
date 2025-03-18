@@ -23,6 +23,8 @@
 		"@google-cloud/aiplatform": "^3.35.0",
 		"@prisma/adapter-d1": "^6.5.0",
 		"@prisma/client": "^6.5.0",
+		"google-auth-library": "^9.15.1",
+		"google-gax": "^4.4.1",
 		"hono": "^4.7.4"
 	},
 	"devDependencies": {
