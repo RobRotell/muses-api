@@ -1,25 +1,22 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DB_CONNECTION")
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
 }
 
 model Entry {
   id         Int      @id @default(autoincrement())
-  date       DateTime @db.Date
+  date       DateTime
   hash       String
-  url        String
-  url_large  String
-  url_medium String
-  url_small  String
   prompt     String
-  tokens     Int
   views      Int
 }
 
-
-// npx prisma format
-// npx prisma db push
+// npx wrangler d1 migrations create muses create_entry_table
+// npx prisma migrate diff --from-empty --to-schema-datamodel ./prisma/schema.prisma --script --output migrations/0001_create_entry_table.sql
+// (dev) npx wrangler d1 migrations apply muses --local
+// (prod) npx wrangler d1 migrations apply muses --remote
