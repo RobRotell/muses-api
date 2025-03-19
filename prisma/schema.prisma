@@ -14,18 +14,6 @@ model Entry {
   hash   String
   prompt String
   views  Int
-
-  imgLargeUrl    String
-  imgLargeWidth  Int
-  imgLargeHeight Int
-
-  imgMediumUrl    String
-  imgMediumWidth  Int
-  imgMediumHeight Int
-
-  imgSmallUrl    String
-  imgSmallWidth  Int
-  imgSmallHeight Int
 }
 
 // npx prisma format
