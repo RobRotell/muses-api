@@ -1,4 +1,4 @@
-import { getRandomValueFromArray } from './getRandomValueFromArray.js'
+import { getRandomValueFromArray } from './getRandomValueFromArray'
 
 
 // https://cloud.google.com/vertex-ai/generative-ai/docs/image/generate-images#predefined-style
@@ -18,7 +18,7 @@ const imageStyles = [
  *
  * @return {Array}
  */
-export const getImageAllStyles = () => {
+export const getAllImageStyles = () => {
 	return imageStyles
 }
 
@@ -28,6 +28,6 @@ export const getImageAllStyles = () => {
  *
  * @return {string}
  */
-export const getImageStyle = () => {
+export const getRandomImageStyle = () => {
 	return getRandomValueFromArray( imageStyles )
 }
