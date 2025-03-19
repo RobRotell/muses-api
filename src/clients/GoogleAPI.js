@@ -1,6 +1,6 @@
 import googleAIPlatform from '@google-cloud/aiplatform'
 import { GoogleAuth } from 'google-auth-library'
-import { getRandomImageStyle } from './utils/imageStyles'
+import { getRandomImageStyle } from '../utils/imageStyles'
 
 
 // it'd be great if we could Singleton-ify this, but we need the CF secrets from Hono's context obj
@@ -27,6 +27,8 @@ export class GoogleAPI {
 		this.#clientEmail = clientEmail
 		this.#privateKey = privateKey
 		this.#projectId = projectId
+
+		this.initialize()
 	}
 
 
