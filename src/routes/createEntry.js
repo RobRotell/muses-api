@@ -3,6 +3,8 @@ import { PrismaClient } from '@prisma/client'
 import { PrismaD1 } from '@prisma/adapter-d1'
 import { getRandomPrompt } from '../utils/prompts'
 import { hashValue } from '../utils/hashValue'
+import { bearerAuth } from 'hono/bearer-auth'
+import { getRandomImageStyle } from '../utils/imageStyles'
 
 /**
  * Handle requests to create images
@@ -13,13 +15,22 @@ import { hashValue } from '../utils/hashValue'
  * @return {void}
  */
 export const createEntry = app => {
-	app.post( '/entry', async c => {
+	const auth = {
+		verifyToken( token, c ) {
+			return token === c.env.ENTRY_BEARER_TOKEN // not the tightest security, but good enough here
+		},
+		noAuthenticationHeaderMessage: {
+			error: 'Please add a bearer token.'
+		},
+		invalidTokenMessage: {
+			error: 'Invalid bearer token. Do I know you?'
+		},
+	}
 
-		// todo -- add validation
-
+	app.post( '/entry', bearerAuth( auth ), async c => {
 		const googleClient = new GoogleAPI( c.env.GOOGLE_API_KEY )
 
-		const prompt = getRandomPrompt()
+		const prompt = `${getRandomPrompt()} Use a ${getRandomImageStyle()} image style.`
 
 		// Google will return a base64 string rep of image
 		let imageBody = await googleClient.generateImage( prompt )
