@@ -5,13 +5,17 @@ import crypto from 'crypto'
  * Super duper simple hashing strategy
  *
  * @param {String} value
+ * @param {Boolean} withToken Increases randomness
  * @return {String}
  */
-export const hashValue = value => {
-	const token = crypto.randomBytes( 60 ).toString( 'hex' )
+export const hashValue = ( value, withToken = false ) => {
 	const hash = crypto.createHash( 'sha256' )
 
-	hash.update( value + token )
+	if( withToken ) {
+		hash.update( value + crypto.randomBytes( 60 ).toString( 'hex' ) )
+	} else {
+		hash.update( value )
+	}
 
 	return hash.digest( 'hex' )
 }
