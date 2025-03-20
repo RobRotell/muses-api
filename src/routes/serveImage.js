@@ -12,11 +12,12 @@ export const serveImage = app => {
 	}),
 	async c => {
 		let {
-			hash, size = 'large'
+			hash, size = 'full'
 		} = c.req.param()
 
-		// is user requesting a valid image size? If not, use large/original image size
+		// is user requesting a valid image size? If not, use large image size
 		if( ![
+			'full',
 			'large',
 			'medium',
 			'small'
@@ -24,7 +25,7 @@ export const serveImage = app => {
 			size = 'large'
 		}
 
-		const baseFileName = `${hash}.jpg`
+		const baseFileName = ( 'full' === size ) ? `${hash}.jpg` : `${hash}-${size}.jpg`
 
 		// does image exist in bucket?
 		let assetObj = await c.env.STORAGE.get( baseFileName )
@@ -34,33 +35,6 @@ export const serveImage = app => {
 			return c.json({
 				error: `No image matched ID: "${hash}`
 			}, 404 )
-		}
-
-		// if user requested sized variant ...
-		if( 'large' !== size ) {
-			const sizedFileName = `${hash}-${size}.jpg`
-			const sizedAssetObj = await c.env.STORAGE.get( sizedFileName )
-
-			// match? Use that
-			if( sizedAssetObj ) {
-				assetObj = sizedAssetObj
-
-			// otherwise, transform and add to bucket
-			} else {
-				const transformedImage = await c.env.IMAGES.input( assetObj.body ).transform({
-					width: ( 'medium' === size ) ? 1024 : 600
-				}).output({
-					format: 'image/jpeg'
-				})
-
-				const sizedImgRes = transformedImage.response()
-				const sizedImgResClone = sizedImgRes.clone()
-
-				// cache for future usage
-				await c.env.STORAGE.put( sizedFileName, sizedImgRes.body )
-
-				assetObj = sizedImgResClone
-			}
 		}
 
 		c.header( 'Content-Type', 'image/jpeg' )
