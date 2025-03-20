@@ -3,7 +3,7 @@
 	"name": "muses",
 	"main": "src/index.js",
 	"compatibility_flags": ["nodejs_compat"],
-	"compatibility_date": "2025-03-17",
+	"compatibility_date": "2025-03-19",
 	"observability": {
 		"enabled": true
 	},
@@ -11,7 +11,7 @@
 		{
 			"binding": "DB",
 			"database_name": "muses",
-			"database_id": "9f5b0c1b-1c8e-492a-aa7b-f8fba76a189a"
+			"database_id": "8abe13e9-ad5f-4da4-9f42-fb4d4a6c7c5a"
 		}
 	],
 	"r2_buckets": [
