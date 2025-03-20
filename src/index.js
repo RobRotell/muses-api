@@ -2,13 +2,18 @@ import { Hono } from 'hono'
 import { getEntry } from './routes/getEntry'
 import { createEntry } from './routes/createEntry'
 import { serveImage } from './routes/serveImage'
+import { cors } from 'hono/cors'
 
 
-const app = new Hono();
+const app = new Hono()
+
+
+// allow everyone to access (for now)
+app.use( '*', cors() )
 
 
 // add all routes
-[
+;[
 	getEntry,
 	createEntry,
 	serveImage
