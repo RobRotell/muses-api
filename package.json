@@ -16,8 +16,7 @@
 	"scripts": {
 		"deploy": "wrangler deploy",
 		"dev": "wrangler dev",
-		"devremote": "wrangler dev --remote",
-		"start": "wrangler dev"
+		"devremote": "wrangler dev --remote"
 	},
 	"dependencies": {
 		"@prisma/adapter-d1": "^6.5.0",

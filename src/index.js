@@ -7,7 +7,7 @@ import { serveImage } from './routes/serveImage'
 const app = new Hono();
 
 
-// add routes
+// add all routes
 [
 	getEntry,
 	createEntry,
