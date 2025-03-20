@@ -70,7 +70,8 @@ export const getEntry = app => {
 			id: entry.id,
 			prompt: entry.prompt,
 			images: {
-				large: `${c.env.ENDPOINT_URL}/m/${entry.hash}`,
+				full: `${c.env.ENDPOINT_URL}/m/${entry.hash}`,
+				large: `${c.env.ENDPOINT_URL}/m/${entry.hash}/large`,
 				medium: `${c.env.ENDPOINT_URL}/m/${entry.hash}/medium`,
 				small: `${c.env.ENDPOINT_URL}/m/${entry.hash}/small`,
 			}

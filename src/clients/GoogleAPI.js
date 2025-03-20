@@ -19,7 +19,9 @@ export class GoogleAPI {
 	/**
 	 * Generate image
 	 *
-	 * @todo error handling
+	 * @todo add better error handling
+	 *
+	 * @throws {Error} failed to get image from Google (e.g. rate limiting)
 	 *
 	 * @param {String} prompt
 	 * @return {Promise<String>} Base64 encoding of JPEG
@@ -54,6 +56,10 @@ export class GoogleAPI {
 		const {
 			predictions
 		} = await res.json()
+
+		if( !predictions ) {
+			throw new Error( 'Failed to request image from Imagen.' )
+		}
 
 		// Google will return a base64 encoding of image
 		let imageBody

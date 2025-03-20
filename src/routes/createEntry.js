@@ -28,12 +28,28 @@ export const createEntry = app => {
 	}
 
 	app.post( '/entry', bearerAuth( auth ), async c => {
+
+		// did user pass a prompt?
+		let {
+			prompt
+		} = await c.req.parseBody()
+
+		if( !prompt ) {
+			prompt = `${getRandomPrompt()} Use a ${getRandomImageStyle()} image style.`
+		}
+
 		const googleClient = new GoogleAPI( c.env.GOOGLE_API_KEY )
 
-		const prompt = `${getRandomPrompt()} Use a ${getRandomImageStyle()} image style.`
-
 		// Google will return a base64 string rep of image
-		let imageBody = await googleClient.generateImage( prompt )
+		let imageBody
+
+		try {
+			imageBody = await googleClient.generateImage( prompt )
+		} catch( err ) {
+			return c.json({
+				error: err
+			}, 500 )
+		}
 
 		// eslint-disable-next-line no-undef
 		imageBody = Buffer.from( imageBody, 'base64' )
