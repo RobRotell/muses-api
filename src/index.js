@@ -16,7 +16,38 @@ const app = new Hono();
 
 
 app.get( '/', c => {
-	return c.text( 'Hello!' )
+	return c.json({
+		routes: {
+			'/entry': [
+				{
+					method: 'GET',
+					params: [
+						{
+							'/:id': {
+								type: 'integer',
+								optional: true,
+								description: 'ID of entry.'
+							}
+						}
+					],
+					description: 'Return entry from ID, if provided, or return entry.'
+				},
+				{
+					method: 'POST',
+					params: [
+						{
+							'prompt': {
+								type: 'string',
+								optional: true,
+								description: 'Text from which to generate image.'
+							}
+						}
+					],
+					description: 'Create an image from prompt, if provided, or from random prompt.'
+				}
+			]
+		}
+	})
 })
 
 
