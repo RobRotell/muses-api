@@ -1,8 +1,12 @@
 import { Hono } from 'hono'
-import { getEntry } from './routes/getEntry'
-import { createEntry } from './routes/createEntry'
-import { serveImage } from './routes/serveImage'
 import { cors } from 'hono/cors'
+import { createEntry } from './routes/createEntry'
+import { getEntry } from './routes/getEntry'
+import { getRandomImageStyle } from './utils/imageStyles'
+import { getRandomPrompt } from './utils/prompts'
+import { routeBreakdown } from './data/routeBreakdown'
+import { serveImage } from './routes/serveImage'
+import { serveStatic } from 'hono/cloudflare-workers'
 
 
 const app = new Hono()
@@ -20,40 +24,30 @@ app.use( '*', cors() )
 ].forEach( route => route( app ) )
 
 
-app.get( '/', c => {
-	return c.json({
-		routes: {
-			'/entry': [
-				{
-					method: 'GET',
-					params: [
-						{
-							'/:id': {
-								type: 'integer',
-								optional: true,
-								description: 'ID of entry.'
-							}
-						}
-					],
-					description: 'Return entry from ID, if provided, or return entry.'
-				},
-				{
-					method: 'POST',
-					params: [
-						{
-							'prompt': {
-								type: 'string',
-								optional: true,
-								description: 'Text from which to generate image.'
-							}
-						}
-					],
-					description: 'Create an image from prompt, if provided, or from random prompt.'
-				}
-			]
-		}
-	})
-})
+app.get( '/', c => c.json( routeBreakdown ) )
+app.notFound( c => c.json( routeBreakdown, 404 ) )
+app.use( '/favicon.ico', serveStatic({
+	path: './assets/images/favicon.ico'
+}) )
 
 
-export default app
+export default {
+	fetch: app.fetch,
+
+	// every four hours, automatically make request to generate image
+	scheduled: async( batch, env ) => {
+		const params = new URLSearchParams
+		params.set( 'prompt', getRandomPrompt() )
+		params.set( 'style', getRandomImageStyle() )
+
+		const headers = new Headers
+		headers.set( 'authorization', `Bearer ${env.ENTRY_BEARER_TOKEN}` )
+		headers.set( 'content-type', 'application/x-www-form-urlencoded' )
+
+		await fetch( 'http://localhost:44305/entry', {
+			headers,
+			method: 'POST',
+			body: params.toString(),
+		})
+	}
+}
