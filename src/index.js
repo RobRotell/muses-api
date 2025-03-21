@@ -44,7 +44,7 @@ export default {
 		headers.set( 'authorization', `Bearer ${env.ENTRY_BEARER_TOKEN}` )
 		headers.set( 'content-type', 'application/x-www-form-urlencoded' )
 
-		await fetch( 'http://localhost:44305/entry', {
+		await fetch( `${env.ENDPOINT_URL}/entry`, {
 			headers,
 			method: 'POST',
 			body: params.toString(),
