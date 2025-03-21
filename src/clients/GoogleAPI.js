@@ -7,8 +7,6 @@ export class GoogleAPI {
 	/**
 	 * Constructor
 	 *
-	 * We need to pass Hono's context object in other to access CF secrets
-	 *
 	 * @param {String} apiKey
 	 */
 	constructor( apiKey ) {

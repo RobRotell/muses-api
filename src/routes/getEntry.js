@@ -55,6 +55,12 @@ export const getEntry = app => {
 			})
 		}
 
+		if( !entry ) {
+			return c.json({
+				error: 'No entries found.'
+			}, 404 )
+		}
+
 		// update views count for row
 		await prisma.entry.update({
 			where: {
@@ -69,6 +75,7 @@ export const getEntry = app => {
 		return c.json({
 			id: entry.id,
 			prompt: entry.prompt,
+			imageStyle: entry.imageStyle ?? '',
 			images: {
 				full: `${c.env.ENDPOINT_URL}/m/${entry.hash}`,
 				large: `${c.env.ENDPOINT_URL}/m/${entry.hash}/large`,
