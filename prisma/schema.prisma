@@ -16,3 +16,9 @@ model Entry {
   imageStyle String?
   views      Int
 }
+
+// npx prisma format
+// npx wrangler d1 migrations create muses create_entry_table
+// npx prisma migrate diff --from-empty --to-schema-datamodel ./prisma/schema.prisma --script --output migrations/0001_create_entry_table.sql
+// (dev) npx wrangler d1 migrations apply muses --local
+// (prod) npx wrangler d1 migrations apply muses --remote
