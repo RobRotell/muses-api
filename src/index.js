@@ -36,6 +36,8 @@ export default {
 
 	// every four hours, automatically make request to generate image
 	scheduled: async( batch, env ) => {
+		console.log( 'starting scheduled job' )
+
 		const params = new URLSearchParams
 		params.set( 'prompt', getRandomPrompt() )
 		params.set( 'style', getRandomImageStyle() )
@@ -43,6 +45,8 @@ export default {
 		const headers = new Headers
 		headers.set( 'authorization', `Bearer ${env.ENTRY_BEARER_TOKEN}` )
 		headers.set( 'content-type', 'application/x-www-form-urlencoded' )
+
+		console.log( 'sending request' )
 
 		const req = await fetch( `${env.ENDPOINT_URL}/entry`, {
 			headers,
