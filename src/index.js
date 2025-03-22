@@ -44,10 +44,20 @@ export default {
 		headers.set( 'authorization', `Bearer ${env.ENTRY_BEARER_TOKEN}` )
 		headers.set( 'content-type', 'application/x-www-form-urlencoded' )
 
-		await fetch( `${env.ENDPOINT_URL}/entry`, {
+		const req = await fetch( `${env.ENDPOINT_URL}/entry`, {
 			headers,
 			method: 'POST',
 			body: params.toString(),
+		})
+
+		console.log({
+			req
+		})
+
+		const res = await req.json()
+
+		console.log({
+			res
 		})
 	}
 }
