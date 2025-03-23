@@ -22,9 +22,9 @@ export class GoogleAPI {
 	 * @throws {Error} failed to get image from Google (e.g. rate limiting)
 	 *
 	 * @param {String} prompt
-	 * @return {Promise<String>} Base64 encoding of JPEG
+	 * @return {Promise<String|false>} Base64 encoding of JPEG or false on failure
 	 */
-	async generateImage( prompt = '' ) {
+	async generateImage( prompt ) {
 
 		// eslint-disable-next-line max-len
 		const endpoint = new URL( 'https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict' )
@@ -56,10 +56,10 @@ export class GoogleAPI {
 		} = await res.json()
 
 		if( !predictions ) {
-			throw new Error( 'Failed to request image from Imagen.' )
+			return false
 		}
 
-		// Google will return a base64 encoding of image
+		// Google will return base64 encoding of image
 		let imageBody
 
 		// should only be one element in array
