@@ -1,8 +1,10 @@
-import { GoogleAPI } from '../clients/GoogleAPI'
+import { ImageHandler } from '../clients/ImageHandler'
 import { PrismaClient } from '@prisma/client'
 import { PrismaD1 } from '@prisma/adapter-d1'
-import { hashValue } from '../utils/hashValue'
 import { bearerAuth } from 'hono/bearer-auth'
+import { getRandomImageStyle } from '../utils/imageStyles'
+import { getRandomPrompt } from '../utils/prompts'
+import { hashValue } from '../utils/hashValue'
 
 
 /**
@@ -29,16 +31,16 @@ export const createEntry = app => {
 		let imageStyle
 		let actualPrompt
 
+		const imageHandler = new ImageHandler( c.env.GOOGLE_API_KEY, c.env.IMAGES, c.env.STORAGE )
+
 		const reqBody = await c.req.parseBody()
 
 		prompt = reqBody.prompt ?? ''
 		imageStyle = reqBody.style ?? ''
 
-		// prompt is required; image style is not
 		if( !prompt.length ) {
-			return c.json({
-				error: 'Prompt is required.'
-			}, 400 )
+			prompt = getRandomPrompt()
+			imageStyle = getRandomImageStyle()
 		}
 
 		actualPrompt = prompt
@@ -47,59 +49,21 @@ export const createEntry = app => {
 			actualPrompt += ` Use a ${imageStyle} image style.`
 		}
 
-		const googleClient = new GoogleAPI( c.env.GOOGLE_API_KEY )
-
 		// Google will return a base64 string rep of image
 		let imageBody
 
 		try {
-			imageBody = await googleClient.generateImage( actualPrompt )
+			imageBody = await imageHandler.createImage( actualPrompt )
 		} catch( err ) {
 			return c.json({
 				error: err
 			}, 500 )
 		}
 
-		// eslint-disable-next-line no-undef
-		imageBody = Buffer.from( imageBody, 'base64' )
-
 		// hash to uniquely name image
 		const hash = hashValue( actualPrompt, true )
 
-		// add original image to storage
-		const baseFileName = `${hash}.jpg`
-
-		await c.env.STORAGE.put( baseFileName, imageBody, {
-			httpMetaData: {
-				contentType: 'image/jpeg'
-			}
-		})
-
-		// support variant sizes
-		const variants = {
-			large: 1280,
-			medium: 1024,
-			small: 600,
-		}
-
-		for( const [
-			size,
-			width
-		] of Object.entries( variants ) ) {
-			const sizedFileStream = await c.env.IMAGES.input( imageBody ).transform({
-				width
-			}).output({
-				format: 'image/jpeg'
-			})
-
-			const sizedFileRes = sizedFileStream.response()
-
-			await c.env.STORAGE.put( `${hash}-${size}.jpg`, sizedFileRes.body, {
-				httpMetaData: {
-					contentType: 'image/jpeg'
-				}
-			})
-		}
+		await imageHandler.saveImage( hash, imageBody )
 
 		// add entry to DB
 		const prisma = new PrismaClient({

@@ -1,9 +1,13 @@
 import { Hono } from 'hono'
+import { ImageHandler } from './clients/ImageHandler'
+import { PrismaClient } from '@prisma/client'
+import { PrismaD1 } from '@prisma/adapter-d1'
 import { cors } from 'hono/cors'
 import { createEntry } from './routes/createEntry'
 import { getEntry } from './routes/getEntry'
 import { getRandomImageStyle } from './utils/imageStyles'
 import { getRandomPrompt } from './utils/prompts'
+import { hashValue } from './utils/hashValue'
 import { routeBreakdown } from './data/routeBreakdown'
 import { serveImage } from './routes/serveImage'
 import { serveStatic } from 'hono/cloudflare-workers'
@@ -34,34 +38,58 @@ app.use( '/favicon.ico', serveStatic({
 export default {
 	fetch: app.fetch,
 
-	// every four hours, automatically make request to generate image
+	// every four hours, automatically generate new image
 	scheduled: async( batch, env ) => {
 		console.log( 'starting scheduled job' )
 
-		const params = new URLSearchParams
-		params.set( 'prompt', getRandomPrompt() )
-		params.set( 'style', getRandomImageStyle() )
+		const imageHandler = new ImageHandler( env.GOOGLE_API_KEY, env.IMAGES, env.STORAGE )
+		const prompt = getRandomPrompt()
+		const imageStyle = getRandomImageStyle()
+		const actualPrompt = `${prompt} Use a ${imageStyle} image style.`
 
-		const headers = new Headers
-		headers.set( 'authorization', `Bearer ${env.ENTRY_BEARER_TOKEN}` )
-		headers.set( 'content-type', 'application/x-www-form-urlencoded' )
+		// Google will return a base64 string rep of image
+		let imageBody
 
-		console.log( 'sending request' )
+		console.log( 'creating image' )
 
-		const req = await fetch( `${env.ENDPOINT_URL}/entry`, {
-			headers,
-			method: 'POST',
-			body: params.toString(),
+		try {
+			imageBody = await imageHandler.createImage( actualPrompt )
+		} catch( err ) {
+			console.log({
+				err
+			})
+
+			return new Response()
+		}
+
+		// hash to uniquely name image
+		const hash = hashValue( actualPrompt, true )
+
+		console.log( `saving image to storage: ${hash}` )
+
+		await imageHandler.saveImage( hash, imageBody )
+
+		// add entry to DB
+		const prisma = new PrismaClient({
+			adapter: new PrismaD1( env.DB )
 		})
 
-		console.log({
-			req
+		console.log( 'saving image to DB' )
+
+		const {
+			id
+		} = await prisma.entry.create({
+			data: {
+				hash,
+				prompt,
+				imageStyle,
+				date: new Date(),
+				views: 0,
+			}
 		})
 
-		const res = await req.json()
+		console.log( `finished: ${id}!` )
 
-		console.log({
-			res
-		})
+		return new Response()
 	}
 }
