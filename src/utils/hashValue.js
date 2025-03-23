@@ -5,7 +5,8 @@ import crypto from 'crypto'
  * Super duper simple hashing strategy
  *
  * @param {String} value
- * @param {Boolean} withToken Increases randomness
+ * @param {Boolean} withToken Increase randomness!!!
+ *
  * @return {String}
  */
 export const hashValue = ( value, withToken = false ) => {
