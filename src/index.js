@@ -40,8 +40,6 @@ export default {
 
 	// every four hours, automatically generate new image
 	scheduled: async( batch, env ) => {
-		console.log( 'starting scheduled job' )
-
 		const imageHandler = new ImageHandler( env.GOOGLE_API_KEY, env.IMAGES, env.STORAGE )
 		const prompt = getRandomPrompt()
 		const imageStyle = getRandomImageStyle()
@@ -49,8 +47,6 @@ export default {
 
 		// Google will return a base64 string rep of image
 		let imageBody
-
-		console.log( 'creating image' )
 
 		try {
 			imageBody = await imageHandler.createImage( actualPrompt )
@@ -65,8 +61,6 @@ export default {
 		// hash to uniquely name image
 		const hash = hashValue( actualPrompt, true )
 
-		console.log( `saving image to storage: ${hash}` )
-
 		await imageHandler.saveImage( hash, imageBody )
 
 		// add entry to DB
@@ -74,11 +68,7 @@ export default {
 			adapter: new PrismaD1( env.DB )
 		})
 
-		console.log( 'saving image to DB' )
-
-		const {
-			id
-		} = await prisma.entry.create({
+		await prisma.entry.create({
 			data: {
 				hash,
 				prompt,
@@ -87,8 +77,6 @@ export default {
 				views: 0,
 			}
 		})
-
-		console.log( `finished: ${id}!` )
 
 		return new Response()
 	}
