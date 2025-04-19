@@ -20,7 +20,8 @@ export const serveImage = app => {
 			'full',
 			'large',
 			'medium',
-			'small'
+			'small',
+			'tiny'
 		].includes( size ) ) {
 			size = 'large'
 		}

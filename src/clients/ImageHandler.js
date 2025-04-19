@@ -57,10 +57,17 @@ export class ImageHandler {
 		// eslint-disable-next-line no-undef
 		imageBody = Buffer.from( imageBody, 'base64' )
 
+		// Google returns PNG; convert to JPG
+		const baseImageStream = await this.#bindingImages.input( imageBody ).transform().output({
+			format: 'image/jpeg'
+		})
+
+		const baseImageRes = baseImageStream.response()
+
 		// add original image to storage
 		const baseFileName = `${hash}.jpg`
 
-		await this.#bindingStorage.put( baseFileName, imageBody, {
+		await this.#bindingStorage.put( baseFileName, baseImageRes.body, {
 			httpMetaData: {
 				contentType: 'image/jpeg'
 			}
@@ -71,6 +78,7 @@ export class ImageHandler {
 			large: 1280,
 			medium: 1024,
 			small: 600,
+			tiny: 320,
 		}
 
 		for( const [

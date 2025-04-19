@@ -81,6 +81,7 @@ export const getEntry = app => {
 				large: `${c.env.ENDPOINT_URL}/m/${entry.hash}/large`,
 				medium: `${c.env.ENDPOINT_URL}/m/${entry.hash}/medium`,
 				small: `${c.env.ENDPOINT_URL}/m/${entry.hash}/small`,
+				tiny: `${c.env.ENDPOINT_URL}/m/${entry.hash}/tiny`,
 			}
 		})
 	})

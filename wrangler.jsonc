@@ -27,10 +27,10 @@
 	},
 	"assets": {
 		"directory": "public"
-	},
-	"triggers": {
-		"crons": [
-      		"0 0 * * *"
-		]
-	},
+	}
+	// "triggers": {
+	// 	"crons": [
+    //   		"0 0 * * *"
+	// 	]
+	// },
 }
