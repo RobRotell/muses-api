@@ -28,9 +28,9 @@
 	"assets": {
 		"directory": "public"
 	},
-	"triggers": {
-		"crons": [
-      		"0 */4 * * *"
-		]
-	},
+	// "triggers": {
+	// 	"crons": [
+    //   		"0 */4 * * *"
+	// 	]
+	// },
 }
