@@ -37,4 +37,47 @@ app.use( '/favicon.ico', serveStatic({
 
 export default {
 	fetch: app.fetch,
+
+	// every four hours, automatically generate new image
+	// scheduled: async( batch, env ) => {
+	// 	const imageHandler = new ImageHandler( env.GOOGLE_API_KEY, env.IMAGES, env.STORAGE )
+	// 	const prompt = getRandomPrompt()
+	// 	const imageStyle = getRandomImageStyle()
+	// 	const actualPrompt = `${prompt} Use a ${imageStyle} image style.`
+
+	// 	// Google will return a base64 string rep of image
+	// 	let imageBody
+
+	// 	try {
+	// 		imageBody = await imageHandler.createImage( actualPrompt )
+	// 	} catch( err ) {
+	// 		console.log({
+	// 			err
+	// 		})
+
+	// 		return new Response()
+	// 	}
+
+	// 	// hash to uniquely name image
+	// 	const hash = hashValue( actualPrompt, true )
+
+	// 	await imageHandler.saveImage( hash, imageBody )
+
+	// 	// add entry to DB
+	// 	const prisma = new PrismaClient({
+	// 		adapter: new PrismaD1( env.DB )
+	// 	})
+
+	// 	await prisma.entry.create({
+	// 		data: {
+	// 			hash,
+	// 			prompt,
+	// 			imageStyle,
+	// 			date: new Date(),
+	// 			views: 0,
+	// 		}
+	// 	})
+
+	// 	return new Response()
+	// }
 }
