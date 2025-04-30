@@ -1,16 +1,18 @@
 import { Hono } from 'hono'
-import { ImageHandler } from './clients/ImageHandler'
-import { PrismaClient } from '@prisma/client'
-import { PrismaD1 } from '@prisma/adapter-d1'
+// import { ImageHandler } from './clients/ImageHandler'
+// import { PrismaClient } from '@prisma/client'
+// import { PrismaD1 } from '@prisma/adapter-d1'
 import { cors } from 'hono/cors'
 import { createEntry } from './routes/createEntry'
 import { getEntry } from './routes/getEntry'
-import { getRandomImageStyle } from './utils/imageStyles'
-import { getRandomPrompt } from './utils/prompts'
-import { hashValue } from './utils/hashValue'
+// import { getRandomImageStyle } from './utils/imageStyles'
+// import { getRandomPrompt } from './utils/prompts'
+// import { hashValue } from './utils/hashValue'
 import { routeBreakdown } from './data/routeBreakdown'
 import { serveImage } from './routes/serveImage'
 import { serveStatic } from 'hono/cloudflare-workers'
+import { getEntries } from './routes/getEntries'
+// import { logger } from 'hono/logger'
 
 
 const app = new Hono()
@@ -18,11 +20,13 @@ const app = new Hono()
 
 // allow everyone to access (for now)
 app.use( '*', cors() )
+// app.use( logger() )
 
 
 // add all routes
 ;[
 	getEntry,
+	getEntries,
 	createEntry,
 	serveImage
 ].forEach( route => route( app ) )
