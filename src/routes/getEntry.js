@@ -2,9 +2,7 @@ import { PrismaClient } from '@prisma/client'
 import { PrismaD1 } from '@prisma/adapter-d1'
 
 /**
- * Handle requests to get entries
- *
- * @todo support fetching entries by ID
+ * Handle requests to get single entry
  *
  * @param {object} app
  * @return {void}
