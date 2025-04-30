@@ -19,7 +19,7 @@
 		{
 			"binding": "STORAGE",
 			"bucket_name": "muses",
-			"preview_bucket_name": "muses-dev"
+			// "preview_bucket_name": "muses-dev"
 		}
 	],
 	"images": {
